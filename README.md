@@ -1,4 +1,4 @@
-### Prescribing trends in the COVID-19 Pandemic.
+# Prescribing trends in the COVID-19 Pandemic.
 
 Here you'll find some basic scoping related to Mental Health (MH) and general prescribing patterns in 2020 compared to previous years.
 
@@ -14,7 +14,7 @@ S3 - S1 AND S2
 MedLine - 126
 CINAHL - 51
 
-## Pre-Prints
+### Pre-Prints
 
 A similar search undertaken on Med/Bio-Rxiv resulted in two related papers.
 
@@ -30,18 +30,18 @@ National Cohort (Wales) prescribing data.
 
 Monthly Prescribing totals for England from Dec 2015 to Nov 2020 is available. Able to disaggregate using BNF codes. Trends for both Anxiolytics and Antidepressants shown below. They seem to follow background (i.e. pre-pandemic) trends overall.
 
-# Anxiolytics
+### Anxiolytics
 ![Anxiolytics](https://github.com/will-ball/Prescribing/blob/ff4e80ee8edf0e450cd138b9d1ab1936bb4c44f2/Plots/anxio.png?raw=true)
 
-# Antidepressants
+### Antidepressants
 ![Antidepressants](https://github.com/will-ball/Prescribing/blob/ff4e80ee8edf0e450cd138b9d1ab1936bb4c44f2/Plots/antidep.png?raw=true)
 
 ## 3. PIS OpenData
 
 OpenData from the Prescribing Information System (PIS) provides monthly overall totals for items prescribed and dispensed in Scotland. Below illustrates the trends for overall Scottish prescribing and the impact of COVID in dispensing.
 
-# Comparing 2020 trends to previous years
+### Comparing 2020 trends to previous years
 ![2020 vs. 2016-19](https://github.com/will-ball/Prescribing/blob/ff4e80ee8edf0e450cd138b9d1ab1936bb4c44f2/Plots/pre-pandemic.png?raw=true)
 
-# Cumulative totals for 2020 vs. previous years (mean)
+### Cumulative totals for 2020 vs. previous years (mean)
 ![Cumulative Totals by month](https://github.com/will-ball/Prescribing/blob/ff4e80ee8edf0e450cd138b9d1ab1936bb4c44f2/Plots/cumsum.png?raw=true)
