@@ -7,9 +7,9 @@ Here you'll find some basic scoping related to Mental Health (MH) and general pr
 Medline & CINAHL searches using the following terms were unsuccessful in finding work which looked at general or MH prescribing trends. A few papers looked at specific trends e.g. Hydroxychloroquine (Trump effect), Antibiotics or Corticosteroids.
 
 Search Terms:
-S1 - Prescrib* OR Prescrip* (TI)
-S2 - COVID* OR Coronavirus OR Pandemic (TI)
-S3 - S1 AND S2
+- S1 - Prescrib* OR Prescrip* (TI)
+- S2 - COVID* OR Coronavirus OR Pandemic (TI)
+- S3 - S1 AND S2
 
 MedLine - 126
 CINAHL - 51
