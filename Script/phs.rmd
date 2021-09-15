@@ -22,6 +22,8 @@ library(gghighlight)
 library(fs)
 library(janitor)
 library(lubridate)
+library(RJSONIO)
+library(RCurl)
 ```
 
 ## Data
@@ -229,5 +231,39 @@ plot <- chapter4 %>%
 plot
 
 ggsave("C:/Users/s01wb1/Documents/Data/tmp/prescribing/Plots/chapter4 patterns.png", plot, height = 8, width = 12, dpi = 900)
+```
+
+```{r}
+library(tidyverse)
+library(RCurl)
+library(RJSONIO)
+library(lubridate)
+
+
+# Bank Holidays
+raw_holidays <- getURL("https://www.gov.uk/bank-holidays.json")
+
+holidays <- fromJSON(raw_holidays)
+
+scot_holidays <- do.call(rbind, holidays$scotland$events) %>%
+  as_tibble() %>% 
+  mutate(date = ymd(date),
+         month_year = floor_date(date, unit = "1 month")) %>% 
+  group_by(month_year) %>% 
+  tally() %>% 
+  rename(holidays = n)
+
+# Working Days
+working_days <- tibble(
+  dates = seq(ymd("2016-01-01"), ymd("2022-01-01"), by = "days"),
+  weekday = weekdays(dates, abbreviate = FALSE),
+  month_year = floor_date(dates, unit = "1 month")) %>% 
+  filter(!(weekday %in% c("Saturday", "Sunday"))) %>% 
+  group_by(month_year) %>% 
+  tally() %>% 
+  rename(working_days = n) %>%
+  left_join(scot_holidays, by = "month_year") %>% 
+  mutate(holidays = replace_na(holidays, 0),
+         prescribing_days = working_days - holidays)
 ```
 
