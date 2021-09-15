@@ -1,0 +1,233 @@
+---
+title: "Open Data Prescriptions"
+author: "Will Ball"
+date: "16/08/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+options(scipen = 999)
+```
+
+## Load Packages
+
+```{r packages,message=FALSE,warning=FALSE}
+library(tidyverse)
+library(vroom)
+library(readr)
+library(viridis)
+library(gghighlight)
+library(fs)
+library(janitor)
+library(lubridate)
+```
+
+## Data
+
+```{r data,message=FALSE,warning=FALSE}
+# 2015
+
+data_dir <- "~/Documents/Data/tmp/prescribing/Data/phs open data/2015"
+
+csv_files <- fs::dir_ls(data_dir)
+
+presc_2015 <- csv_files %>%
+  map_dfr(read_csv) %>%
+  clean_names() %>%
+  mutate(paid_date_month = ym(paid_date_month)) %>%
+  rename(hbt = hbt2014) %>%
+  select(!c(gp_practice, gross_ingredient_cost))
+
+write_delim(presc_2015, file = "C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2015/2015.csv", delim = ",")
+
+# 2016
+
+data_dir <- "~/Documents/Data/tmp/prescribing/Data/phs open data/2016"
+
+csv_files <- fs::dir_ls(data_dir)
+
+presc_2016 <- csv_files %>%
+  map_dfr(read_csv) %>%
+  clean_names() %>%
+  mutate(paid_date_month = ym(paid_date_month)) %>%
+  select(!c(gp_practice, gross_ingredient_cost))
+
+write_delim(presc_2016, "C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2016/2016.csv", delim = ",")
+
+# 2017
+
+data_dir <- "~/Documents/Data/tmp/prescribing/Data/phs open data/2017"
+
+csv_files <- fs::dir_ls(data_dir)
+
+presc_2017 <- csv_files %>%
+  map_dfr(read_csv) %>%
+  clean_names() %>%
+  mutate(paid_date_month = ym(paid_date_month)) %>%
+  select(!c(gp_practice, gross_ingredient_cost, class_of_preparation_code))
+
+write_delim(presc_2017, "C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2017/2017.csv", delim = ",")
+
+# 2018
+
+data_dir <- "~/Documents/Data/tmp/prescribing/Data/phs open data/2018"
+
+csv_files <- fs::dir_ls(data_dir)
+
+presc_2018 <- csv_files %>%
+  map_dfr(read_csv) %>%
+  clean_names() %>%
+  mutate(paid_date_month = ym(paid_date_month)) %>%
+  select(!c(gp_practice, gross_ingredient_cost, class_of_preparation_code))
+
+write_delim(presc_2018, "C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2018/2018.csv", delim = ",")
+
+# 2019
+
+data_dir <- "~/Documents/Data/tmp/prescribing/Data/phs open data/2019"
+
+csv_files <- fs::dir_ls(data_dir)
+
+presc_2019 <- csv_files %>%
+  map_dfr(read_csv) %>%
+  clean_names() %>%
+  mutate(paid_date_month = ym(paid_date_month)) %>%
+  select(!c(gp_practice, gross_ingredient_cost, class_of_preparation_code))
+
+write_delim(presc_2019, "C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2019/2019.csv", delim = ",")
+
+# 2020
+
+data_dir <- "~/Documents/Data/tmp/prescribing/Data/phs open data/2020"
+
+csv_files <- fs::dir_ls(data_dir)
+
+presc_2020 <- csv_files %>%
+  map_dfr(read_csv) %>%
+  clean_names() %>%
+  mutate(paid_date_month = ym(paid_date_month)) %>%
+  select(!c(gp_practice, gross_ingredient_cost, class_of_preparation_code))
+
+write_delim(presc_2020, "C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2020/2020.csv", delim = ",")
+
+# 2021
+
+data_dir <- "~/Documents/Data/tmp/prescribing/Data/phs open data/2021"
+
+csv_files <- fs::dir_ls(data_dir)
+
+presc_2021 <- csv_files %>%
+  map_dfr(read_csv) %>%
+  clean_names() %>%
+  mutate(paid_date_month = ym(paid_date_month)) %>%
+  select(!c(gp_practice, gross_ingredient_cost, class_of_preparation_code))
+
+write_delim(presc_2021, "C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2021/2021.csv", delim = ",")
+
+```
+
+```{r combined, message=FALSE,warning=FALSE}
+# Combined
+
+presc_total <- list(presc_2015, presc_2016, presc_2017, presc_2018, presc_2019, presc_2020, presc_2021) %>%
+  bind_rows()
+
+rm(presc_2015, presc_2016, presc_2017, presc_2018, presc_2019, presc_2020, presc_2021, csv_files, data_dir)
+```
+
+# Cut downs
+
+```{r cut downs, message=FALSE,warning=FALSE}
+# Derive BNF chapter, section, subsection, paragraph codes
+
+presc_total <- presc_total %>%
+  mutate(bnf_chapter = substr(bnf_item_code, 1, 2),
+         bnf_section = substr(bnf_item_code, 1, 4),
+         bnf_sub_section = substr(bnf_item_code, 1, 6),
+         bnf_paragraph = substr(bnf_item_code, 1, 7))
+
+presc_total <- presc_total %>% 
+  filter(!is.na(bnf_item_code))
+
+write_delim(presc_total, "C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/prescriptions_15-21.csv", delim = ",")
+
+# Cut down to common MH drugs
+
+presc_cns <- presc_total %>%
+  filter(bnf_chapter == "04")
+```
+
+```{r}
+# DATA
+health_boards <- vroom("https://www.opendata.nhs.scot/dataset/9f942fdb-e59e-44f5-b534-d6e17229cc7b/resource/652ff726-e676-4a20-abda-435b98dd7bdc/download/hb14_hb19.csv")
+
+presc_2018 <- vroom("C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2018/2018.csv")
+presc_2019 <- vroom("C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2019/2019.csv")
+presc_2020 <- vroom("C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2020/2020.csv")
+presc_2021 <- vroom("C:/Users/s01wb1/Documents/Data/tmp/prescribing/Data/phs open data/2021/2021.csv")
+
+# Hypnotics
+hyp_anx_19_20 <- list(presc_2018, presc_2019, presc_2020, presc_2021) %>%
+  bind_rows() %>% 
+  mutate(bnf_chapter = substr(bnf_item_code, 1, 2),
+         bnf_section = substr(bnf_item_code, 1, 4),
+         bnf_sub_section = substr(bnf_item_code, 1, 6),
+         bnf_paragraph = substr(bnf_item_code, 1, 7),
+         bnf_chemical = substr(bnf_item_code, 1, 9)) %>% 
+  filter(bnf_section == "0401") %>% 
+  left_join(health_boards, by = c("hbt" = "HB"))
+
+# Chemical Lookup for Hypnotics/Anxiolytics
+chemical_lookup <- hyp_anx_19_20 %>%
+  filter(bnf_paragraph == "0401010") %>%
+  count(bnf_chemical) %>%
+  select(bnf_chemical) %>% 
+  mutate(bnf_chemical_name = c("Sodium Oxybate", "Melatonin", "Chloral Hydrate", "Cloral Betaine",  "Clomethiazole Edisilate", "Clomethiazole", "Loprazolam Mesilate", "Lormetazepam", "Nitrazepam", "Temazepam", "Zolpidem Tartrate", "Zopiclone"))
+
+# Chapter 4
+chapter4 <- list(presc_2018, presc_2019, presc_2020, presc_2021) %>%
+  bind_rows() %>% 
+  mutate(bnf_chapter = substr(bnf_item_code, 1, 2)) %>% 
+  filter(bnf_chapter == "04") %>%
+  mutate(bnf_section = substr(bnf_item_code, 1, 4),
+         bnf_sub_section = substr(bnf_item_code, 1, 6),
+         bnf_paragraph = substr(bnf_item_code, 1, 7),
+         bnf_chemical = substr(bnf_item_code, 1, 9)) %>% 
+  left_join(health_boards, by = c("hbt" = "HB"))
+
+# Chapter 4 lookup
+chapter4_lookup <- chapter4 %>%
+  count(bnf_section) %>%
+  select(bnf_section) %>% 
+  mutate(bnf_section_name = c("Hypnotics and anxiolytics", "Drugs for psychoses and related disorders", "Antidepressants", "ADHD Medications", "Treatment of Obesity", "Nausea and Vertigo", "Analgesics", "Antiepileptic Medications", "Parkinsonism and related disorders", "Substance Dependence", "Drugs for dementia"))
+
+rm(presc_2018, presc_2019, presc_2020, presc_2021)
+
+# Plotting
+plot <- chapter4 %>%
+  left_join(chapter4_lookup, by = "bnf_section") %>% 
+  group_by(bnf_section_name, paid_date_month) %>% 
+  tally() %>% 
+  ggplot(aes(x = paid_date_month, y = n)) +
+  geom_line() +
+  theme_classic() +
+  geom_vline(xintercept = ymd("2020-03-26"), colour = "dark red", linetype = 2) +
+#  scale_colour_viridis(discrete = TRUE) +
+#  gghighlight(bnf_chemical_name == "Melatonin", use_direct_label = FALSE, calculate_per_facet = TRUE) +
+  gghighlight(bnf_section_name == "Hypnotics and anxiolytics", use_direct_label = FALSE) +
+  scale_x_date(breaks = "1 year", date_labels = "%Y") +
+  facet_wrap(~bnf_section_name, scales = "free_y") +
+  theme(legend.position = "right") +
+  labs(title = "Monthly Prescriptions by Chapter 4 BNF Section 2018-2021",
+       caption = "@WillBall12 | Source: PIS (OpenData.nhs.scot)",
+       x = "",
+       y = "n",
+       colour = "")
+
+plot
+
+ggsave("C:/Users/s01wb1/Documents/Data/tmp/prescribing/Plots/chapter4 patterns.png", plot, height = 8, width = 12, dpi = 900)
+```
+
